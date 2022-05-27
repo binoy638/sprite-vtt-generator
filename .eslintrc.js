@@ -36,6 +36,7 @@ module.exports = {
     'simple-import-sort/exports': 'error',
     'sonarjs/cognitive-complexity': 'off',
     'sonarjs/no-duplicate-string': 'off',
+    'security/detect-non-literal-fs-filename': 'off',
     'no-plusplus': 'off',
   },
   settings: {

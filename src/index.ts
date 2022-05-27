@@ -225,15 +225,6 @@ export class SpriteGenerator {
         }
       }
     }
-    // eslint-disable-next-line security/detect-non-literal-fs-filename
     fs.writeFileSync(this.webVTTPath, thumbOutput);
   }
 }
-
-// const thumb = new SpriteGenerator({
-//   inputPath: './asset/ss/output.m3u8',
-//   outputDir: './tmp',
-//   // multiple: true,
-//   interval: 4,
-// });
-// thumb.generateWebVTT();
