@@ -3,12 +3,12 @@ import fs from 'fs-extra';
 import moment from 'moment';
 import path from 'path';
 
-interface webVTTOptions {
+export interface webVTTOptions {
   required: boolean;
-  output: string;
+  path: string;
 }
 
-interface Options {
+export interface Options {
   inputPath: string;
 
   rowCount?: number;
@@ -18,9 +18,6 @@ interface Options {
   interval?: number;
 
   multiple?: boolean;
-
-  /** if not provided it will be auto detected during run time */
-  fps?: number;
 
   /**
    * width of sprite
@@ -45,7 +42,7 @@ interface Options {
   thumbnailPrefix?: string;
 }
 
-export class SpriteGenerator {
+class SpriteGenerator {
   private outputDir: string;
 
   private inputPath: string;
@@ -69,12 +66,12 @@ export class SpriteGenerator {
   private webVTTPath: string | undefined;
 
   constructor(options: Options) {
-    if (options?.webVTT?.required === true && options?.webVTT?.output === undefined) {
-      throw new Error('webVttPath is required when webVTT is true');
+    if (options?.webVTT?.required === true && options?.webVTT?.path === undefined) {
+      throw new Error('webVTT path not found');
     }
     if (options?.webVTT?.required) {
       this.webVTTRequired = true;
-      this.webVTTPath = options.webVTT.output;
+      this.webVTTPath = options.webVTT.path;
     }
     this.outputDir = options.outputDir;
     this.inputPath = options.inputPath;
@@ -228,3 +225,5 @@ export class SpriteGenerator {
     fs.writeFileSync(this.webVTTPath, thumbOutput);
   }
 }
+
+export default SpriteGenerator;

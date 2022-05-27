@@ -1,41 +1,27 @@
-# NodeJs REST API boilerplate
+# Sprite Vtt Generator
 
-## Running the app in the development mode
+## Easily generate thumbnail sprites along with vtt file.
 
-Run the following command to launch the project in dev mode
+Example
 
-```bash
-  npm run dev
-```
+```ts
+import SpriteGenerator from 'sprite-vtt-generator';
 
-## Building the app for production
+const spriteGenerator = new SpriteGenerator({
+  inputPath: './test/test.mp4',
+  outputDir: './test/output',
+  width: 120, // default 160,
+  height: 60, // default 90,
+  rowCount: 2, // default 5,
+  colCount: 5, // default 5,
+  multiple: true, // default false, if true rowCount will be ingored,
+  interval: 5, // default 10(seconds),
+  thumbnailPrefix: 'img', // default 'thumb',
+  webVTT: {
+    required: true,
+    path: './test/output/test.vtt',
+  },
+});
 
-Run the following command to build the project
-
-```bash
-  npm run build
-```
-
-## Docker for development
-
-Run the following command to launch the project inside a docker container
-
-```bash
-  docker-compose -f docker-compose.dev.yml up
-```
-
-## Docker for Production
-
-Run the following command build & run a distroless docker container for production
-
-```bash
-  docker-compose up
-```
-
-### Note
-
-To setup [husky](https://www.npmjs.com/package/husky) & [lint-staged](https://www.npmjs.com/package/lint-staged) for pre-commit hook run
-
-```bash
-  npm run install:husky
+await spriteGenerator.generate();
 ```

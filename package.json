@@ -1,8 +1,8 @@
 {
-  "name": "sprite-generator",
+  "name": "sprite-vtt-generator",
   "version": "1.0.0",
-  "description": "Generate thumbnai sprites from video and its webVTT",
-  "main": "index.js",
+  "description": "Easily generate thumbnail sprites along with vtt file.",
+  "main": "dist/src/index.js",
   "scripts": {
     "dev": "ts-node-dev --inspect=8181 --respawn --transpile-only src/index.ts",
     "start": "npm run build && node ./dist/src/index.js",
@@ -14,13 +14,15 @@
     "format:check": "prettier -c \"**/*.{js,ts,json}\"",
     "format": "prettier -w \"**/*.{js,ts,json}\"",
     "lint": "eslint --fix ./src/*",
-    "install:husky": "husky install",
-    "pre-commit": "npm run typecheck && lint-staged && jest"
+    "prepare": "husky install",
+    "pre-commit": "npm run typecheck && lint-staged && jest",
+    "prepublish": "tsc"
   },
   "lint-staged": {
     "src/**/*.{js,ts}": "eslint",
     "**/*.{js,ts,json}": "prettier --write"
   },
+  "types": "dist/src/index.d.ts",
   "keywords": [],
   "author": "binoy638",
   "license": "MIT",
