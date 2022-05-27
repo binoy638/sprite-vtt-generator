@@ -1,3 +1,4 @@
+/* eslint-disable sonarjs/cognitive-complexity */
 /* eslint-disable no-plusplus */
 /* eslint-disable sonarjs/no-duplicate-string */
 import ffmpeg from 'fluent-ffmpeg';
@@ -89,7 +90,7 @@ export class SpriteGenerator {
     this.thumbnailPrefix = options.thumbnailPrefix || this.thumbnailPrefix;
   }
 
-  public getFPS(): Promise<number> {
+  private getFPS(): Promise<number> {
     const defaultFps = 24;
     return new Promise(resolve => {
       ffmpeg(this.inputPath).ffprobe((err, data) => {
@@ -112,7 +113,7 @@ export class SpriteGenerator {
     });
   }
 
-  public getDuration(): Promise<number> {
+  private getDuration(): Promise<number> {
     return new Promise(resolve => {
       ffmpeg(this.inputPath).ffprobe((err, data) => {
         if (err) {
@@ -157,7 +158,13 @@ export class SpriteGenerator {
         })
         .on('end', () => {
           console.log('Thumbnail generation ended');
-          resolve();
+          if (this.webVTTRequired) {
+            this.generateWebVTT().then(() => {
+              resolve();
+            });
+          } else {
+            resolve();
+          }
         })
         .on('error', err => {
           console.log(err);
@@ -167,21 +174,32 @@ export class SpriteGenerator {
     });
   }
 
-  public async generateWebVTT(): Promise<void> {
-    // const duration = await this.getDuration();
+  private async generateWebVTT(): Promise<void> {
+    if (!this.webVTTPath || !this.webVTTRequired) {
+      return;
+    }
+    if (this.webVTTPath.split('.').pop() !== 'vtt') {
+      throw new Error('webVTT path must be a vtt file');
+    }
+    const duration = await this.getDuration();
     const col = this.colCount;
+    let row = this.rowCount;
 
-    const row = this.rowCount;
     let thumbOutput = 'WEBVTT\n\n';
-    if (this.multiple) {
-      const startTime = moment('00:00:00', 'HH:mm:ss.SSS');
-      const endTime = moment('00:00:00', 'HH:mm:ss.SSS').add(this.interval, 'seconds');
-
-      for (let i = 0; i <= col; i++) {
-        for (let j = 0; j <= row; j++) {
+    const startTime = moment('00:00:00', 'HH:mm:ss.SSS');
+    const endTime = moment('00:00:00', 'HH:mm:ss.SSS').add(this.interval, 'seconds');
+    const totalImages = Math.floor(duration / this.interval);
+    if (!this.multiple) {
+      row = Math.floor(totalImages / this.colCount);
+      for (let i = 0; i < row; i++) {
+        for (let j = 0; j < col; j++) {
+          const currentImageCount = i * col + j;
+          if (currentImageCount > totalImages) {
+            break;
+          }
           thumbOutput += `${startTime.format('HH:mm:ss.SSS')} --> ${endTime.format('HH:mm:ss.SSS')}\n`;
 
-          thumbOutput += `${this.thumbnailPrefix}\\#xywh=${j * this.width},${i * this.height},${this.width},${
+          thumbOutput += `${this.thumbnailPrefix}-01.jpg\\#xywh=${j * this.width},${i * this.height},${this.width},${
             this.height
           }\n\n`;
 
@@ -189,43 +207,36 @@ export class SpriteGenerator {
           endTime.add(this.interval, 'seconds');
         }
       }
+    } else {
+      const totalSpirits = Math.ceil(duration / this.interval / (row * col));
+      for (let k = 0; k < totalSpirits; k++) {
+        for (let i = 0; i < row; i++) {
+          for (let j = 0; j < col; j++) {
+            const currentImageCount = k * row * col + i * col + j;
+            if (currentImageCount > totalImages) {
+              break;
+            }
+            thumbOutput += `${startTime.format('HH:mm:ss.SSS')} --> ${endTime.format('HH:mm:ss.SSS')}\n`;
+
+            thumbOutput += `${this.thumbnailPrefix}-${k + 1 < 10 ? '0' : ''}${k + 1}.jpg\\#xywh=${j * this.width},${
+              i * this.height
+            },${this.width},${this.height}\n\n`;
+
+            startTime.add(this.interval, 'seconds');
+            endTime.add(this.interval, 'seconds');
+          }
+        }
+      }
     }
-    fs.writeFileSync('thumbnails.vtt', thumbOutput);
+    // eslint-disable-next-line security/detect-non-literal-fs-filename
+    fs.writeFileSync(this.webVTTPath, thumbOutput);
   }
 }
 
-const thumb = new SpriteGenerator({ inputPath: './asset/ss/output.m3u8', outputDir: './tmp' });
-thumb.generateWebVTT();
-// // thumb.detectFPS().then(fps => console.log(fps));
-// // thumb.generate();
-// thumb.getDuration().then(duration => console.log(duration));
-
-// const fs = require('fs');
-// const moment = require('moment');
-
-// let video_length = 1483;
-// let number_of_thumbnails = 25 * 15;
-// let thumb_interval = Math.round(video_length / number_of_thumbnails); // so 6 seconds per thumbnail
-
-// console.log(thumb_interval);
-
-// let sprite_width = 160 * 5; // Values are assumed based each thumbnail having
-// let sprite_height = 90 * 5; //a width of 120 and a height of 68 with a total of 10
-
-// let start_time = moment('00:00:00', 'HH:mm:ss.SSS');
-// let end_time = moment('00:00:00', 'HH:mm:ss.SSS').add(thumb_interval, 'seconds');
-
-// let thumb_output = 'WEBVTT\n\n';
-
-// for (let i = 0; i <= sprite_height / 90; i++) {
-//   for (let j = 0; j <= sprite_width / 160; j++) {
-//     thumb_output += start_time.format('HH:mm:ss.SSS') + ' --> ' + end_time.format('HH:mm:ss.SSS') + '\n';
-
-//     thumb_output += 'thumbnails.jpg#xywh=' + j * 160 + ',' + i * 90 + ',160,90\n\n';
-
-//     start_time.add(thumb_interval, 'seconds');
-//     end_time.add(thumb_interval, 'seconds');
-//   }
-// }
-
-// fs.writeFileSync('thumbnails.vtt', thumb_output);
+// const thumb = new SpriteGenerator({
+//   inputPath: './asset/ss/output.m3u8',
+//   outputDir: './tmp',
+//   // multiple: true,
+//   interval: 4,
+// });
+// thumb.generateWebVTT();
