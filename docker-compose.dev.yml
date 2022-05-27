@@ -5,11 +5,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dev
-    container_name: express-app-dev
+    container_name: sprite-generator
     volumes:
-      # - /app/node_modules
+      - ./tmp:/app/tmp
+      - ./assets:/app/assets
       - ./src:/app/src
-    ports:
-      - "8080:8080"
-      - "8181:8181"
     command: npm run dev

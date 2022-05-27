@@ -1,9 +1,19 @@
-FROM node:16-alpine
+FROM node:16
 
-WORKDIR /app
+ENV NODE_ENV=development
 
-ADD package*.json ./
+WORKDIR /home/app
+
+USER root
+
+RUN apt-get -y update
+
+RUN apt-get install -y ffmpeg
+
+COPY package*.json ./
 
 RUN npm i
+
+EXPOSE 3000
 
 COPY . ./

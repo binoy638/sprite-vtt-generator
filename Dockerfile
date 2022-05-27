@@ -1,39 +1,19 @@
-### Stage 1 ###
+FROM node:16
 
-FROM node:16-alpine as ts-compiler
+ENV NODE_ENV=development
 
-WORKDIR /app
+WORKDIR /home/app
+
+USER root
+
+RUN apt-get -y update
+
+RUN apt-get install -y ffmpeg
 
 COPY package*.json ./
 
-COPY tsconfig*.json ./
+RUN npm i
 
-RUN npm install
+EXPOSE 3000
 
 COPY . ./
-
-RUN npm run build
-
-
-### Stage 2 ###
-FROM node:16-alpine as ts-remover
-
-WORKDIR /app
-
-COPY --from=ts-compiler /app/package*.json ./
-
-COPY --from=ts-compiler /app/dist ./
-
-RUN npm install --only=production
-
-
-### Stage 3 ###
-FROM gcr.io/distroless/nodejs:16
-
-WORKDIR /app
-
-COPY --from=ts-remover /app ./
-
-USER 1000
-
-CMD ["src/index.js"]

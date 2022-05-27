@@ -54,6 +54,7 @@
   "dependencies": {
     "dotenv": "^14.3.2",
     "fluent-ffmpeg": "^2.1.2",
-    "fs-extra": "^10.1.0"
+    "fs-extra": "^10.1.0",
+    "moment": "^2.29.3"
   }
 }

@@ -1,5 +1,8 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable sonarjs/no-duplicate-string */
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs-extra';
+import moment from 'moment';
 import path from 'path';
 
 interface webVTTOptions {
@@ -127,13 +130,23 @@ export class SpriteGenerator {
   public async generate(): Promise<void> {
     await fs.ensureDir(this.outputDir);
 
+    //* calculate the number of rows if mutiple sprite is false
+    if (!this.multiple) {
+      const duration = await this.getDuration();
+      if (duration === 0) {
+        throw new Error('could not fetch duration from video');
+      }
+      const totalImages = Math.floor(duration / this.interval);
+      this.rowCount = Math.floor(totalImages / this.colCount);
+    }
+
     const fps = await this.getFPS();
 
     const outputDirPath = path.join(this.outputDir, `${this.thumbnailPrefix}-%02d.jpg`);
 
     const complexFilter = `select='not(mod(n,${fps * this.interval}))',scale=${this.width}:${this.height},tile=${
-      this.rowCount
-    }x${this.colCount}`;
+      this.colCount
+    }x${this.rowCount}`;
     return new Promise((resolve, reject) => {
       ffmpeg(this.inputPath)
         .complexFilter(complexFilter)
@@ -146,7 +159,6 @@ export class SpriteGenerator {
           console.log('Thumbnail generation ended');
           resolve();
         })
-
         .on('error', err => {
           console.log(err);
           reject();
@@ -154,9 +166,36 @@ export class SpriteGenerator {
         .run();
     });
   }
+
+  public async generateWebVTT(): Promise<void> {
+    // const duration = await this.getDuration();
+    const col = this.colCount;
+
+    const row = this.rowCount;
+    let thumbOutput = 'WEBVTT\n\n';
+    if (this.multiple) {
+      const startTime = moment('00:00:00', 'HH:mm:ss.SSS');
+      const endTime = moment('00:00:00', 'HH:mm:ss.SSS').add(this.interval, 'seconds');
+
+      for (let i = 0; i <= col; i++) {
+        for (let j = 0; j <= row; j++) {
+          thumbOutput += `${startTime.format('HH:mm:ss.SSS')} --> ${endTime.format('HH:mm:ss.SSS')}\n`;
+
+          thumbOutput += `${this.thumbnailPrefix}\\#xywh=${j * this.width},${i * this.height},${this.width},${
+            this.height
+          }\n\n`;
+
+          startTime.add(this.interval, 'seconds');
+          endTime.add(this.interval, 'seconds');
+        }
+      }
+    }
+    fs.writeFileSync('thumbnails.vtt', thumbOutput);
+  }
 }
 
-// const thumb = new SpriteGenerator({ inputPath: './asset/ss/output.m3u8', outputDir: './tmp' });
+const thumb = new SpriteGenerator({ inputPath: './asset/ss/output.m3u8', outputDir: './tmp' });
+thumb.generateWebVTT();
 // // thumb.detectFPS().then(fps => console.log(fps));
 // // thumb.generate();
 // thumb.getDuration().then(duration => console.log(duration));
