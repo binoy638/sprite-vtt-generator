@@ -1,6 +1,6 @@
 {
   "name": "sprite-vtt-generator",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Easily generate thumbnail sprites along with vtt file.",
   "main": "dist/src/index.js",
   "scripts": {
