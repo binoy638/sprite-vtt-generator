@@ -1,6 +1,6 @@
 {
   "name": "sprite-vtt-generator",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Easily generate thumbnail sprites along with vtt file.",
   "main": "dist/src/index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "format": "prettier -w \"**/*.{js,ts,json}\"",
     "lint": "eslint --fix ./src/*",
     "prepare": "husky install",
-    "pre-commit": "npm run typecheck && lint-staged && jest",
+    "pre-commit": "npm run typecheck && npm run build && lint-staged && jest",
     "prepublish": "tsc"
   },
   "lint-staged": {
