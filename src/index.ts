@@ -57,7 +57,7 @@ class SpriteGenerator {
 
   private multiple = false;
 
-  private interval = 10;
+  private interval?: number;
 
   private thumbnailPrefix = 'thumbs';
 
@@ -80,7 +80,7 @@ class SpriteGenerator {
     this.multiple = options.multiple || this.multiple;
     this.height = options.height || this.height;
     this.width = options.width || this.width;
-    this.interval = options.interval || this.interval;
+    this.interval = options.interval || undefined;
     this.thumbnailPrefix = options.thumbnailPrefix || this.thumbnailPrefix;
   }
 
@@ -124,14 +124,14 @@ class SpriteGenerator {
 
   public async generate(): Promise<void> {
     await fs.ensureDir(this.outputDir);
-
+    const interval = await this.getOptimalInterval();
     //* calculate the number of rows if mutiple sprite is false
     if (!this.multiple) {
       const duration = await this.getDuration();
       if (duration === 0) {
         throw new Error('could not fetch duration from video');
       }
-      const totalImages = Math.floor(duration / this.interval);
+      const totalImages = Math.floor(duration / interval);
       this.rowCount = Math.floor(totalImages / this.colCount);
     }
 
@@ -139,7 +139,7 @@ class SpriteGenerator {
 
     const outputDirPath = path.join(this.outputDir, `${this.thumbnailPrefix}-%02d.jpg`);
 
-    const complexFilter = `select='not(mod(n,${fps * this.interval}))',scale=${this.width}:${this.height},tile=${
+    const complexFilter = `select='not(mod(n,${fps * interval}))',scale=${this.width}:${this.height},tile=${
       this.colCount
     }x${this.rowCount}`;
     return new Promise((resolve, reject) => {
@@ -176,13 +176,14 @@ class SpriteGenerator {
       throw new Error('webVTT path must be a vtt file');
     }
     const duration = await this.getDuration();
+    const interval = await this.getOptimalInterval();
     const col = this.colCount;
     let row = this.rowCount;
 
     let thumbOutput = 'WEBVTT\n\n';
     const startTime = moment('00:00:00', 'HH:mm:ss.SSS');
-    const endTime = moment('00:00:00', 'HH:mm:ss.SSS').add(this.interval, 'seconds');
-    const totalImages = Math.floor(duration / this.interval);
+    const endTime = moment('00:00:00', 'HH:mm:ss.SSS').add(interval, 'seconds');
+    const totalImages = Math.floor(duration / interval);
     if (!this.multiple) {
       row = Math.floor(totalImages / this.colCount);
       for (let i = 0; i < row; i++) {
@@ -197,12 +198,12 @@ class SpriteGenerator {
             this.height
           }\n\n`;
 
-          startTime.add(this.interval, 'seconds');
-          endTime.add(this.interval, 'seconds');
+          startTime.add(interval, 'seconds');
+          endTime.add(interval, 'seconds');
         }
       }
     } else {
-      const totalSpirits = Math.ceil(duration / this.interval / (row * col));
+      const totalSpirits = Math.ceil(duration / interval / (row * col));
       for (let k = 0; k < totalSpirits; k++) {
         for (let i = 0; i < row; i++) {
           for (let j = 0; j < col; j++) {
@@ -216,13 +217,29 @@ class SpriteGenerator {
               i * this.height
             },${this.width},${this.height}\n\n`;
 
-            startTime.add(this.interval, 'seconds');
-            endTime.add(this.interval, 'seconds');
+            startTime.add(interval, 'seconds');
+            endTime.add(interval, 'seconds');
           }
         }
       }
     }
     fs.writeFileSync(this.webVTTPath, thumbOutput);
+  }
+
+  // TODO: used some kind of algorithm to calculate the optimal interval
+  private async getOptimalInterval(): Promise<number> {
+    if (this.interval) return this.interval;
+    const duration = await this.getDuration();
+    if (duration < 120) return 1;
+    if (duration < 300) return 2;
+    if (duration < 600) return 3;
+    if (duration < 1200) return 4;
+    if (duration < 1800) return 5;
+    if (duration < 3600) return 10;
+    if (duration < 7200) return 15;
+    if (duration < 10800) return 30;
+    if (duration < 21600) return 60;
+    return 120;
   }
 }
 

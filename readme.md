@@ -17,7 +17,7 @@ const spriteGenerator = new SpriteGenerator({
   rowCount: 2, // default 5,
   colCount: 5, // default 5,
   multiple: true, // default false, if true rowCount will be ingored,
-  interval: 5, // default 10(seconds),
+  interval: 5, // if not provided optimal interval will be chosed based on video duration,
   thumbnailPrefix: 'img', // default 'thumb',
   webVTT: {
     required: true,
