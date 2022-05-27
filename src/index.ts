@@ -194,7 +194,7 @@ class SpriteGenerator {
           }
           thumbOutput += `${startTime.format('HH:mm:ss.SSS')} --> ${endTime.format('HH:mm:ss.SSS')}\n`;
 
-          thumbOutput += `${this.thumbnailPrefix}-01.jpg\\#xywh=${j * this.width},${i * this.height},${this.width},${
+          thumbOutput += `${this.thumbnailPrefix}-01.jpg#xywh=${j * this.width},${i * this.height},${this.width},${
             this.height
           }\n\n`;
 
@@ -213,7 +213,7 @@ class SpriteGenerator {
             }
             thumbOutput += `${startTime.format('HH:mm:ss.SSS')} --> ${endTime.format('HH:mm:ss.SSS')}\n`;
 
-            thumbOutput += `${this.thumbnailPrefix}-${k + 1 < 10 ? '0' : ''}${k + 1}.jpg\\#xywh=${j * this.width},${
+            thumbOutput += `${this.thumbnailPrefix}-${k + 1 < 10 ? '0' : ''}${k + 1}.jpg#xywh=${j * this.width},${
               i * this.height
             },${this.width},${this.height}\n\n`;
 
