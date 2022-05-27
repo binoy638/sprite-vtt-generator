@@ -1,6 +1,6 @@
 {
   "name": "sprite-vtt-generator",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "Easily generate thumbnail sprites along with vtt file.",
   "main": "dist/src/index.js",
   "scripts": {
@@ -23,7 +23,7 @@
     "**/*.{js,ts,json}": "prettier --write"
   },
   "types": "dist/src/index.d.ts",
-  "keywords": [],
+  "keywords": ["sprite", "thumbnail", "vtt","ffmpeg"],
   "author": "binoy638",
   "license": "MIT",
   "devDependencies": {

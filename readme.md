@@ -2,6 +2,8 @@
 
 ## Easily generate thumbnail sprites along with vtt file.
 
+### Important Note: FFmpeg needs to be installed.
+
 Example
 
 ```ts
