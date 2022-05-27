@@ -34,6 +34,9 @@ module.exports = {
     'no-console': 'off',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
+    'sonarjs/cognitive-complexity': 'off',
+    'sonarjs/no-duplicate-string': 'off',
+    'no-plusplus': 'off',
   },
   settings: {
     'import/parsers': {

@@ -1,6 +1,3 @@
-/* eslint-disable sonarjs/cognitive-complexity */
-/* eslint-disable no-plusplus */
-/* eslint-disable sonarjs/no-duplicate-string */
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'fs-extra';
 import moment from 'moment';
