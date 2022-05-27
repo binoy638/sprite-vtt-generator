@@ -1,0 +1,59 @@
+{
+  "name": "sprite-generator",
+  "version": "1.0.0",
+  "description": "Generate thumbnai sprites from video and its webVTT",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --inspect=8181 --respawn --transpile-only src/index.ts",
+    "start": "npm run build && node ./dist/src/index.js",
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "format:check": "prettier -c \"**/*.{js,ts,json}\"",
+    "format": "prettier -w \"**/*.{js,ts,json}\"",
+    "lint": "eslint --fix ./src/*",
+    "install:husky": "husky install",
+    "pre-commit": "npm run typecheck && lint-staged && jest"
+  },
+  "lint-staged": {
+    "src/**/*.{js,ts}": "eslint",
+    "**/*.{js,ts,json}": "prettier --write"
+  },
+  "keywords": [],
+  "author": "binoy638",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/fluent-ffmpeg": "^2.1.20",
+    "@types/fs-extra": "^9.0.13",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^16.4.12",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-typescript": "^2.4.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-security": "^1.4.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "eslint-plugin-sonarjs": "^0.11.0",
+    "eslint-plugin-unicorn": "^40.1.0",
+    "husky": "^7.0.1",
+    "jest": "^27.0.6",
+    "lint-staged": "^11.1.1",
+    "prettier": "^2.3.2",
+    "ts-jest": "^27.0.4",
+    "ts-node": "^10.1.0",
+    "ts-node-dev": "^1.1.8",
+    "tsconfig-paths": "^3.10.1",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "dotenv": "^14.3.2",
+    "fluent-ffmpeg": "^2.1.2",
+    "fs-extra": "^10.1.0"
+  }
+}
