@@ -233,10 +233,10 @@ class SpriteGenerator {
     if (duration < 120) return 1;
     if (duration < 300) return 2;
     if (duration < 600) return 3;
-    if (duration < 1200) return 4;
-    if (duration < 1800) return 5;
-    if (duration < 3600) return 10;
-    if (duration < 7200) return 15;
+    if (duration < 1800) return 4;
+    if (duration < 3600) return 5;
+    if (duration < 7200) return 10;
+    if (duration < 9200) return 15;
     if (duration < 10800) return 30;
     if (duration < 21600) return 60;
     return 120;
