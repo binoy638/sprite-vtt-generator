@@ -86,10 +86,10 @@ class SpriteGenerator {
 
   private getFPS(): Promise<number> {
     const defaultFps = 24;
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       ffmpeg(this.inputPath).ffprobe((err, data) => {
         if (err) {
-          resolve(defaultFps);
+          reject(err);
         }
         const videoStream = data.streams[0];
         const fpsString = videoStream?.r_frame_rate || videoStream?.avg_frame_rate;
@@ -108,10 +108,10 @@ class SpriteGenerator {
   }
 
   private getDuration(): Promise<number> {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       ffmpeg(this.inputPath).ffprobe((err, data) => {
         if (err) {
-          resolve(0);
+          reject(err);
         }
         const { duration } = data.format;
         if (Number(duration)) {
@@ -148,10 +148,10 @@ class SpriteGenerator {
         .outputOption(['-vsync', 'vfr', '-an'])
         .output(outputDirPath)
         .on('start', () => {
-          console.log('Thumbnail generation started');
+          // console.log('Thumbnail generation started');
         })
         .on('end', () => {
-          console.log('Thumbnail generation ended');
+          // console.log('Thumbnail generation ended');
           if (this.webVTTRequired) {
             this.generateWebVTT().then(() => {
               resolve();
@@ -161,8 +161,8 @@ class SpriteGenerator {
           }
         })
         .on('error', err => {
-          console.log(err);
-          reject();
+          // console.log(err);
+          reject(err);
         })
         .run();
     });
