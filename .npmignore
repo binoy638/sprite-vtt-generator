@@ -19,3 +19,4 @@ tsconfig.json
 .git
 src
 dist/src/__tests__
+.github

@@ -1,11 +1,13 @@
 version: "3.7"
  
 services:
-  app-prod:
+  app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: express-app-prod
-    ports:
-      - "8080:8080"
 
+    container_name: sprite-generator
+    volumes:
+      - ./tmp:/app/tmp
+      - ./assets:/app/assets
+      - ./src:/app/src

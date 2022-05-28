@@ -1,6 +1,6 @@
 {
   "name": "sprite-vtt-generator",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "Easily generate thumbnail sprites along with vtt file.",
   "main": "dist/src/index.js",
   "scripts": {
@@ -15,15 +15,19 @@
     "format": "prettier -w \"**/*.{js,ts,json}\"",
     "lint": "eslint --fix ./src/*",
     "prepare": "husky install",
-    "pre-commit": "npm run typecheck && npm run build && lint-staged && jest",
-    "prepublish": "tsc"
+    "pre-commit": "npm run typecheck && npm run build && lint-staged && jest"
   },
   "lint-staged": {
     "src/**/*.{js,ts}": "eslint",
     "**/*.{js,ts,json}": "prettier --write"
   },
   "types": "dist/src/index.d.ts",
-  "keywords": ["sprite", "thumbnail", "vtt","ffmpeg"],
+  "keywords": [
+    "sprite",
+    "thumbnail",
+    "vtt",
+    "ffmpeg"
+  ],
   "author": "binoy638",
   "license": "MIT",
   "devDependencies": {
@@ -54,7 +58,6 @@
     "typescript": "^4.3.5"
   },
   "dependencies": {
-    "dotenv": "^14.3.2",
     "fluent-ffmpeg": "^2.1.2",
     "fs-extra": "^10.1.0",
     "moment": "^2.29.3"
