@@ -1,7 +1,7 @@
 {
   "name": "sprite-vtt-generator",
-  "version": "1.0.9",
-  "description": "Easily generate thumbnail sprites along with vtt file.",
+  "version": "1.1.0",
+  "description": "Easily generate thumbnail sprites and its vtt file.",
   "main": "dist/src/index.js",
   "scripts": {
     "dev": "ts-node-dev --inspect=8181 --respawn --transpile-only src/index.ts",
@@ -29,6 +29,10 @@
     "ffmpeg"
   ],
   "author": "binoy638",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/binoy638/sprite-vtt-generator"
+  },
   "license": "MIT",
   "devDependencies": {
     "@types/fluent-ffmpeg": "^2.1.20",
