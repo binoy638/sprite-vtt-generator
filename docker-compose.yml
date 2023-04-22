@@ -9,5 +9,5 @@ services:
     container_name: sprite-generator
     volumes:
       - ./tmp:/app/tmp
-      - ./assets:/app/assets
+      - ./assets:/app/asset
       - ./src:/app/src

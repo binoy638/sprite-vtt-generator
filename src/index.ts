@@ -42,7 +42,7 @@ export interface Options {
   thumbnailPrefix?: string;
 }
 
-class SpriteGenerator {
+export class SpriteGenerator {
   private outputDir: string;
 
   private inputPath: string;
@@ -69,10 +69,12 @@ class SpriteGenerator {
     if (options?.webVTT?.required === true && options?.webVTT?.path === undefined) {
       throw new Error('webVTT path not found');
     }
+
     if (options?.webVTT?.required) {
       this.webVTTRequired = true;
       this.webVTTPath = options.webVTT.path;
     }
+
     this.outputDir = options.outputDir;
     this.inputPath = options.inputPath;
     this.rowCount = options.rowCount || this.rowCount;
@@ -123,9 +125,13 @@ class SpriteGenerator {
   }
 
   public async generate(): Promise<void> {
+    const inputExists = await fs.pathExists(this.inputPath);
+    if (!inputExists) {
+      throw new Error('input file not found');
+    }
     await fs.ensureDir(this.outputDir);
     const interval = await this.getOptimalInterval();
-    //* calculate the number of rows if mutiple sprite is false
+    //* calculate the number of rows if multiple sprite is false
     if (!this.multiple) {
       const duration = await this.getDuration();
       if (duration === 0) {
@@ -242,5 +248,3 @@ class SpriteGenerator {
     return 120;
   }
 }
-
-export default SpriteGenerator;

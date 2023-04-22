@@ -4,10 +4,10 @@
 
 ### Important Note: FFmpeg needs to be installed.
 
-Example
+Javascript Example
 
 ```ts
-import SpriteGenerator from 'sprite-vtt-generator';
+const { SpriteGenerator } = require("sprite-vtt-generator");
 
 const spriteGenerator = new SpriteGenerator({
   inputPath: './test/test.mp4',
@@ -16,8 +16,8 @@ const spriteGenerator = new SpriteGenerator({
   height: 60, // default 90,
   rowCount: 2, // default 5,
   colCount: 5, // default 5,
-  multiple: true, // default false, if true rowCount will be ingored,
-  interval: 5, // if not provided optimal interval will be chosed based on video duration,
+  multiple: true, // default false, if true rowCount will be ignored,
+  interval: 5, // if not provided optimal interval will be chosen based on video duration,
   thumbnailPrefix: 'img', // default 'thumb',
   webVTT: {
     required: true,
@@ -25,5 +25,45 @@ const spriteGenerator = new SpriteGenerator({
   },
 });
 
-await spriteGenerator.generate();
+spriteGenerator
+  .generate()
+  .then(() => {
+    //do stuff here
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
+```
+
+Typescript Example
+
+```ts
+import { SpriteGenerator } from "sprite-vtt-generator";
+
+const spriteGenerator = new SpriteGenerator({
+  inputPath: './test/test.mp4',
+  outputDir: './test/output',
+  width: 120, // default 160,
+  height: 60, // default 90,
+  rowCount: 2, // default 5,
+  colCount: 5, // default 5,
+  multiple: true, // default false, if true rowCount will be ignored,
+  interval: 5, // if not provided optimal interval will be chosen based on video duration,
+  thumbnailPrefix: 'img', // default 'thumb',
+  webVTT: {
+    required: true,
+    path: './test/output/test.vtt',
+  },
+});
+
+spriteGenerator
+  .generate()
+  .then(() => {
+    //do stuff here
+  })
+  .catch((err) => {
+    console.log(err);
+  });
+
 ```
